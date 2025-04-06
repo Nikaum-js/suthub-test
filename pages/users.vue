@@ -301,18 +301,15 @@ import { Search, X, MapPin, Frown, ChevronLeft, ChevronRight, ChevronsLeft, Chev
 const route = useRoute()
 const router = useRouter()
 
-// Estado reativo para armazenar parâmetros de busca
 const queryParams = reactive({
   page: parseInt(route.query.page) || 1,
   limit: parseInt(route.query.limit) || 20,
   search: route.query.search || ''
 })
 
-// Refs para UI e manipulação de estado
 const searchQuery = ref(queryParams.search)
 const searchTimeout = ref(null)
 
-// Calcular valores derivados
 const currentPage = computed({
   get: () => queryParams.page,
   set: (value) => {
@@ -329,7 +326,6 @@ const limit = computed({
   }
 })
 
-// Função para atualizar a rota com os parâmetros de busca
 const updateRoute = () => {
   router.push({
     query: {
@@ -340,22 +336,19 @@ const updateRoute = () => {
   })
 }
 
-// Buscar dados usando useAsyncData para SSR
 const { data: userData, pending: isLoading, refresh: refreshUsers } = useAsyncData(
   () => fetchUsers(queryParams),
   {
     watch: [() => queryParams.page, () => queryParams.limit, () => queryParams.search],
-    server: true, // Garantir que os dados sejam buscados no servidor
+    server: true,
     initialCache: false,
     default: () => ({ users: [], total: 0 })
   }
 )
 
-// Extrair dados do resultado
 const users = computed(() => userData.value?.users || [])
 const total = computed(() => userData.value?.total || 0)
 
-// Buscar usuários da API
 async function fetchUsers({ page, limit, search }) {
   const skip = (page - 1) * limit
   
@@ -376,7 +369,6 @@ async function fetchUsers({ page, limit, search }) {
   }
 }
 
-// Manipular mudanças na busca
 const handleSearch = () => {
   if (searchTimeout.value) {
     clearTimeout(searchTimeout.value)
@@ -389,7 +381,6 @@ const handleSearch = () => {
   }, 300)
 }
 
-// Limpar busca
 const clearSearch = () => {
   searchQuery.value = ''
   queryParams.search = ''
@@ -397,7 +388,6 @@ const clearSearch = () => {
   updateRoute()
 }
 
-// Navegação de página
 const handlePageSizeChange = () => {
   queryParams.page = 1
   updateRoute()
@@ -426,7 +416,6 @@ const prevPage = () => {
   }
 }
 
-// Cálculos e formatação
 const totalPages = computed(() => Math.ceil(total.value / limit.value))
 
 const visiblePageNumbers = computed(() => {
@@ -511,7 +500,6 @@ const handleImageError = (event) => {
   event.target.src = 'https://via.placeholder.com/150?text=User'
 }
 
-// Observar mudanças no limite e ajustar página se necessário
 watch(limit, () => {
   if (currentPage.value > Math.ceil(total.value / limit.value)) {
     currentPage.value = 1
