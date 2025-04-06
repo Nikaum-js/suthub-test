@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen mb-20 px-4 sm:px-6 lg:px-8 bg-gray-50">
+  <div class="min-h-screen mb-20 px-2 sm:px-6 lg:px-8 bg-gray-50">
     <div class="max-w-2xl mx-auto bg-white p-6 sm:p-8 rounded-2xl shadow-lg border border-gray-100">
       <div class="mb-8 flex items-center space-x-3 border-b border-gray-100 pb-5">
         <div class="bg-gradient-to-br from-indigo-600 to-purple-700 rounded-lg p-2 shadow-md">

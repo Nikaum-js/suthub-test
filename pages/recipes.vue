@@ -34,89 +34,89 @@
             </div>
             
             <div class="p-5 space-y-5">
-  <div class="flex items-center justify-between mb-4">
-    <span class="text-sm text-gray-600">
-      {{ recipes.length }} receitas encontradas
-    </span>
-    <button 
-      v-if="selectedTags.length > 0"
-      @click="clearTags" 
-      class="px-2.5 py-1 rounded-full text-xs font-medium bg-indigo-100 text-indigo-700 hover:bg-indigo-200 shadow-sm transition-all duration-200 flex items-center"
-    >
-      Limpar filtros
-    </button>
-  </div>
-  
-  <div class="relative">
-    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-      <Search class="h-5 w-5 text-gray-400" />
-    </div>
-    <input
-      type="text"
-      v-model="tagSearch"
-      placeholder="Digite o nome da tag para filtrar..."
-      class="block w-full text-sm pl-10 pr-10 py-3 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
-    />
-    <div v-if="tagSearch" class="absolute inset-y-0 right-0 pr-3 flex items-center">
-      <button @click="tagSearch = ''" class="text-gray-400 hover:text-gray-500">
-        <X class="h-5 w-5" />
-      </button>
-    </div>
-  </div>
-  
-  <div v-if="selectedTags.length > 0" class="mb-4">
-    <div class="flex items-center justify-between mb-2">
-      <p class="text-sm font-medium text-gray-700">Tags selecionadas:</p>
-      <button 
-        @click="clearTags" 
-        class="text-xs text-indigo-600 hover:text-indigo-800 transition-colors flex items-center"
-      >
-        <span class="underline">Remover todas</span>
-      </button>
-    </div>
-    <div class="flex flex-wrap gap-2">
-      <span
-        v-for="tag in selectedTags"
-        :key="tag"
-        class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-indigo-100 text-indigo-800 shadow-sm"
-      >
-        {{ tag }}
-        <button
-          type="button"
-          class="ml-1.5 inline-flex items-center justify-center h-4 w-4 rounded-full bg-indigo-200 text-indigo-600 hover:bg-indigo-300 transition-colors"
-          @click="removeTag(tag)"
-        >
-          <X class="h-3 w-3" />
-        </button>
-      </span>
-    </div>
-  </div>
-  
-          <div class="mt-1">
-            <p class="text-sm font-medium text-gray-700 mb-2">Todas as tags:</p>
-            <div class="max-h-[500px] overflow-y-auto pr-2 flex flex-wrap gap-2 overflow-x-hidden scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-300 hover:scrollbar-thumb-gray-400">
-              <button
-                v-for="tag in filteredTags"
-                :key="tag"
-                @click="toggleTag(tag)"
-                :class="[
-                  'px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-200',
-                  selectedTags.includes(tag)
-                    ? 'bg-gradient-to-br from-indigo-600 to-purple-700 text-white shadow-md'
-                    : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
-                ]"
-              >
-                {{ tag }}
-                <span v-if="selectedTags.includes(tag)" class="ml-1">✓</span>
-              </button>
+              <div class="flex items-center justify-between mb-4">
+                <span class="text-sm text-gray-600">
+                  {{ recipes.length }} receitas encontradas
+                </span>
+                <button 
+                  v-if="selectedTags.length > 0"
+                  @click="clearTags" 
+                  class="px-2.5 py-1 rounded-full text-xs font-medium bg-indigo-100 text-indigo-700 hover:bg-indigo-200 shadow-sm transition-all duration-200 flex items-center"
+                >
+                  Limpar filtros
+                </button>
+              </div>
+              
+              <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Search class="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  type="text"
+                  v-model="tagSearch"
+                  placeholder="Digite o nome da tag para filtrar..."
+                  class="block w-full text-sm pl-10 pr-10 py-3 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
+                />
+                <div v-if="tagSearch" class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                  <button @click="tagSearch = ''" class="text-gray-400 hover:text-gray-500">
+                    <X class="h-5 w-5" />
+                  </button>
+                </div>
+              </div>
+              
+              <div v-if="selectedTags.length > 0" class="mb-4">
+                <div class="flex items-center justify-between mb-2">
+                  <p class="text-sm font-medium text-gray-700">Tags selecionadas:</p>
+                  <button 
+                    @click="clearTags" 
+                    class="text-xs text-indigo-600 hover:text-indigo-800 transition-colors flex items-center"
+                  >
+                    <span class="underline">Remover todas</span>
+                  </button>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                  <span
+                    v-for="tag in selectedTags"
+                    :key="tag"
+                    class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-indigo-100 text-indigo-800 shadow-sm"
+                  >
+                    {{ tag }}
+                    <button
+                      type="button"
+                      class="ml-1.5 inline-flex items-center justify-center h-4 w-4 rounded-full bg-indigo-200 text-indigo-600 hover:bg-indigo-300 transition-colors"
+                      @click="removeTag(tag)"
+                    >
+                      <X class="h-3 w-3" />
+                    </button>
+                  </span>
+                </div>
+              </div>
+              
+              <div class="mt-1">
+                <p class="text-sm font-medium text-gray-700 mb-2">Todas as tags:</p>
+                <div class="max-h-[500px] overflow-y-auto pr-2 flex flex-wrap gap-2 overflow-x-hidden scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-300 hover:scrollbar-thumb-gray-400">
+                  <button
+                    v-for="tag in filteredTags"
+                    :key="tag"
+                    @click="toggleTag(tag)"
+                    :class="[
+                      'px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-200',
+                      selectedTags.includes(tag)
+                        ? 'bg-gradient-to-br from-indigo-600 to-purple-700 text-white shadow-md'
+                        : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
+                    ]"
+                  >
+                    {{ tag }}
+                    <span v-if="selectedTags.includes(tag)" class="ml-1">✓</span>
+                  </button>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
           </div>
         </div>
         
         <div class="w-full lg:w-3/4">
-          <div v-if="loading" class="bg-white rounded-xl shadow-sm p-12 flex justify-center items-center">
+          <div v-if="pending" class="bg-white rounded-xl shadow-sm p-12 flex justify-center items-center">
             <div class="flex flex-col items-center">
               <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-600 mb-4"></div>
               <p class="text-gray-500">Carregando receitas...</p>
@@ -263,7 +263,7 @@
           </div>
           
           <div 
-            v-if="recipes.length > 0 && !loading && canLoadMore" 
+            v-if="recipes.length > 0 && !pending && canLoadMore" 
             class="mt-10 flex justify-center"
           >
             <button
@@ -477,23 +477,47 @@ import {
 } from 'lucide-vue-next';
 import ModalDialog from '../../components/Modal.vue';
 
-const allRecipes = ref([]);
-const allTags = ref([]);
-const recipesByTag = ref({});
-const recipes = ref([]);
-const selectedTags = ref([]);
 const tagSearch = ref('');
-const loading = ref(true);
+const viewMode = ref('grid');
+const activeTab = ref('ingredients');
+const showRecipeModal = ref(false);
+const selectedRecipe = ref(null);
 const loadingMore = ref(false);
 const page = ref(1);
 const limit = ref(10);
-const totalCount = ref(0);
-const hasMorePages = ref(true);
-const viewMode = ref('grid');
-const activeTab = ref('ingredients');
+const selectedTags = ref([]);
+const recipesByTag = ref({});
+const tagTotalCounts = ref({});
 
-const showRecipeModal = ref(false);
-const selectedRecipe = ref(null);
+const { data: tagsData, pending: tagsPending } = await useFetch('https://dummyjson.com/recipes/tags', {
+  server: true,
+  key: 'recipe-tags'
+});
+
+const allTags = ref(tagsData.value || []);
+
+const { data: recipesData, pending } = await useFetch('https://dummyjson.com/recipes', {
+  server: true,
+  query: {
+    limit: limit.value
+  },
+  key: 'initial-recipes'
+});
+
+const allRecipes = ref(recipesData.value?.recipes || []);
+const recipes = ref(recipesData.value?.recipes || []);
+const totalCount = ref(recipesData.value?.total || 0);
+const hasMorePages = ref(true);
+
+const filteredTags = computed(() => {
+  if (!tagSearch.value) {
+    return allTags.value.sort();
+  }
+  
+  return allTags.value
+    .filter(tag => tag.toLowerCase().includes(tagSearch.value.toLowerCase()))
+    .sort();
+});
 
 const canLoadMore = computed(() => {
   if (selectedTags.value.length === 0) {
@@ -508,108 +532,6 @@ const canLoadMore = computed(() => {
   
   return false;
 });
-
-const tagTotalCounts = ref({});
-
-const filteredTags = computed(() => {
-  if (!tagSearch.value) {
-    return allTags.value.sort();
-  }
-  
-  return allTags.value
-    .filter(tag => tag.toLowerCase().includes(tagSearch.value.toLowerCase()))
-    .sort();
-});
-
-const fetchAllTags = async () => {
-  try {
-    const response = await fetch('https://dummyjson.com/recipes/tags');
-    const data = await response.json();
-    allTags.value = data;
-  } catch (error) {
-    console.error('Erro ao buscar tags:', error);
-  }
-};
-
-const fetchInitialRecipes = async () => {
-  loading.value = true;
-  try {
-    const response = await fetch(`https://dummyjson.com/recipes?limit=${limit.value}`);
-    const data = await response.json();
-    
-    totalCount.value = data.total;
-    allRecipes.value = data.recipes;
-    recipes.value = data.recipes;
-    
-    page.value = 1;
-  } catch (error) {
-    console.error('Erro ao buscar receitas:', error);
-  } finally {
-    loading.value = false;
-  }
-};
-
-const loadMoreRecipes = async () => {
-  if (!hasMorePages.value || loadingMore.value) return;
-  
-  const newPage = page.value + 1;
-  const skip = page.value * limit.value;
-  
-  loadingMore.value = true;
-  try {
-    if (selectedTags.value.length > 0) {
-      if (selectedTags.value.length === 1) {
-        const tag = selectedTags.value[0];
-        const response = await fetch(`https://dummyjson.com/recipes/tag/${tag}?limit=${limit.value}&skip=${skip}`);
-        const data = await response.json();
-        
-        if (data.recipes && data.recipes.length > 0) {
-          tagTotalCounts.value[tag] = {
-            total: data.total,
-            loaded: (recipesByTag.value[tag]?.length || 0) + data.recipes.length
-          };
-          
-          const existingIds = new Set(recipesByTag.value[tag]?.map(r => r.id) || []);
-          const newRecipes = data.recipes.filter(r => !existingIds.has(r.id));
-          
-          if (newRecipes.length > 0) {
-            recipesByTag.value[tag] = [...(recipesByTag.value[tag] || []), ...newRecipes];
-            
-            applyTagFilters();
-            
-            page.value = newPage;
-          } else {
-            hasMorePages.value = false;
-          }
-        } else {
-          hasMorePages.value = false;
-        }
-      }
-    } else {
-      const response = await fetch(`https://dummyjson.com/recipes?limit=${limit.value}&skip=${skip}`);
-      const data = await response.json();
-      
-      if (data.recipes && data.recipes.length > 0) {
-        const existingIds = new Set(allRecipes.value.map(r => r.id));
-        const newRecipes = data.recipes.filter(r => !existingIds.has(r.id));
-        
-        if (newRecipes.length > 0) {
-          allRecipes.value = [...allRecipes.value, ...newRecipes];
-          recipes.value = allRecipes.value;
-          page.value = newPage;
-        } else {
-          hasMorePages.value = false;
-        }
-      } else {
-        hasMorePages.value = false;
-      }
-    }
-  } catch (error) {
-    console.error('Erro ao carregar mais receitas:', error);
-  } finally {
-    loadingMore.value = false;
-  }
-};
 
 const toggleTag = async (tag) => {
   if (selectedTags.value.includes(tag)) {
@@ -674,18 +596,17 @@ const applyTagFilters = () => {
 };
 
 const fetchRecipesByTag = async (tag) => {
-  loading.value = true;
+  const loading = ref(true);
   try {
-    const response = await fetch(`https://dummyjson.com/recipes/tag/${tag}`);
-    const data = await response.json();
+    const { data } = await useFetch(`https://dummyjson.com/recipes/tag/${tag}`);
     
-    if (data.recipes) {
+    if (data.value?.recipes) {
       tagTotalCounts.value[tag] = {
-        total: data.total,
-        loaded: data.recipes.length
+        total: data.value.total,
+        loaded: data.value.recipes.length
       };
       
-      recipesByTag.value[tag] = data.recipes;
+      recipesByTag.value[tag] = data.value.recipes;
       
       applyTagFilters();
     }
@@ -696,19 +617,86 @@ const fetchRecipesByTag = async (tag) => {
   }
 };
 
+const loadMoreRecipes = async () => {
+  if (!hasMorePages.value || loadingMore.value) return;
+  
+  const newPage = page.value + 1;
+  const skip = page.value * limit.value;
+  
+  loadingMore.value = true;
+  try {
+    if (selectedTags.value.length > 0) {
+      if (selectedTags.value.length === 1) {
+        const tag = selectedTags.value[0];
+        const { data } = await useFetch(`https://dummyjson.com/recipes/tag/${tag}`, {
+          query: {
+            limit: limit.value,
+            skip: skip
+          }
+        });
+        
+        if (data.value?.recipes && data.value.recipes.length > 0) {
+          tagTotalCounts.value[tag] = {
+            total: data.value.total,
+            loaded: (recipesByTag.value[tag]?.length || 0) + data.value.recipes.length
+          };
+          
+          const existingIds = new Set(recipesByTag.value[tag]?.map(r => r.id) || []);
+          const newRecipes = data.value.recipes.filter(r => !existingIds.has(r.id));
+          
+          if (newRecipes.length > 0) {
+            recipesByTag.value[tag] = [...(recipesByTag.value[tag] || []), ...newRecipes];
+            
+            applyTagFilters();
+            
+            page.value = newPage;
+          } else {
+            hasMorePages.value = false;
+          }
+        } else {
+          hasMorePages.value = false;
+        }
+      }
+    } else {
+      const { data } = await useFetch('https://dummyjson.com/recipes', {
+        query: {
+          limit: limit.value,
+          skip: skip
+        }
+      });
+      
+      if (data.value?.recipes && data.value.recipes.length > 0) {
+        const existingIds = new Set(allRecipes.value.map(r => r.id));
+        const newRecipes = data.value.recipes.filter(r => !existingIds.has(r.id));
+        
+        if (newRecipes.length > 0) {
+          allRecipes.value = [...allRecipes.value, ...newRecipes];
+          recipes.value = allRecipes.value;
+          page.value = newPage;
+        } else {
+          hasMorePages.value = false;
+        }
+      } else {
+        hasMorePages.value = false;
+      }
+    }
+  } catch (error) {
+    console.error('Erro ao carregar mais receitas:', error);
+  } finally {
+    loadingMore.value = false;
+  }
+};
+
 const openRecipeDetails = async (recipe) => {
   activeTab.value = 'ingredients';
   
   if (!recipe.ingredients || !recipe.instructions) {
     try {
-      loading.value = true;
-      const response = await fetch(`https://dummyjson.com/recipes/${recipe.id}`);
-      selectedRecipe.value = await response.json();
-      loading.value = false;
+      const { data, pending: detailsPending } = await useFetch(`https://dummyjson.com/recipes/${recipe.id}`);
+      selectedRecipe.value = data.value;
     } catch (error) {
       console.error(`Erro ao buscar detalhes da receita ${recipe.id}:`, error);
       selectedRecipe.value = recipe;
-      loading.value = false;
     }
   } else {
     selectedRecipe.value = recipe;
@@ -718,9 +706,21 @@ const openRecipeDetails = async (recipe) => {
 };
 
 onMounted(async () => {
-  await Promise.all([
-    fetchAllTags(),
-    fetchInitialRecipes()
-  ]);
+  const commonTags = ['vegetarian', 'dessert', 'breakfast'];
+  for (const tag of commonTags) {
+    if (!recipesByTag.value[tag]) {
+      const { data } = await useFetch(`https://dummyjson.com/recipes/tag/${tag}`, {
+        query: { limit: limit.value }
+      });
+      
+      if (data.value?.recipes) {
+        recipesByTag.value[tag] = data.value.recipes;
+        tagTotalCounts.value[tag] = {
+          total: data.value.total,
+          loaded: data.value.recipes.length
+        };
+      }
+    }
+  }
 });
 </script>

@@ -27,7 +27,7 @@
         </div>
       </div>
       
-      <div v-if="searchQuery && !loading" class="mb-4 px-2">
+      <div v-if="searchQuery && !isLoading" class="mb-4 px-2">
         <p class="text-sm text-gray-600">
           <span v-if="users.length > 0">
             {{ users.length }} resultado(s) encontrado(s) para "{{ searchQuery }}"
@@ -41,7 +41,7 @@
         </p>
       </div>
       
-      <div v-if="loading" class="flex flex-col items-center justify-center my-12">
+      <div v-if="isLoading" class="flex flex-col items-center justify-center my-12">
         <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-indigo-600"></div>
         <p class="mt-4 text-gray-600">Carregando usuários...</p>
       </div>
@@ -165,7 +165,7 @@
         </div>
       </div>
       
-      <div v-else-if="!loading && users.length === 0" class="bg-white rounded-lg shadow-md p-8 text-center">
+      <div v-else-if="!isLoading && users.length === 0" class="bg-white rounded-lg shadow-md p-8 text-center">
         <Frown class="h-16 w-16 mx-auto text-gray-400" />
         <h3 class="mt-4 text-xl font-medium text-gray-900">Nenhum usuário encontrado</h3>
         <p class="mt-2 text-sm text-gray-500">Tente ajustar seus critérios de busca.</p>
@@ -178,7 +178,7 @@
         </button>
       </div>
       
-      <div v-if="!loading && users.length > 0" class="mt-6 bg-white rounded-xl shadow-md p-4 border border-gray-100 animate-fade-in">
+      <div v-if="!isLoading && users.length > 0" class="mt-6 bg-white rounded-xl shadow-md p-4 border border-gray-100 animate-fade-in">
         <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
           <div class="text-sm text-gray-700 order-2 sm:order-1 text-center sm:text-left font-medium">
             <span class="hidden sm:inline">Mostrando </span>
@@ -294,17 +294,139 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed, watch } from 'vue'
+import { ref, computed, watch, reactive } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { Search, X, MapPin, Frown, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, ChevronDown } from 'lucide-vue-next'
 
-const users = ref([])
-const loading = ref(true)
-const currentPage = ref(1)
-const limit = ref(20)
-const total = ref(0)
-const searchQuery = ref('')
+const route = useRoute()
+const router = useRouter()
+
+// Estado reativo para armazenar parâmetros de busca
+const queryParams = reactive({
+  page: parseInt(route.query.page) || 1,
+  limit: parseInt(route.query.limit) || 20,
+  search: route.query.search || ''
+})
+
+// Refs para UI e manipulação de estado
+const searchQuery = ref(queryParams.search)
 const searchTimeout = ref(null)
 
+// Calcular valores derivados
+const currentPage = computed({
+  get: () => queryParams.page,
+  set: (value) => {
+    queryParams.page = value
+    updateRoute()
+  }
+})
+
+const limit = computed({
+  get: () => queryParams.limit,
+  set: (value) => {
+    queryParams.limit = parseInt(value)
+    updateRoute()
+  }
+})
+
+// Função para atualizar a rota com os parâmetros de busca
+const updateRoute = () => {
+  router.push({
+    query: {
+      page: queryParams.page,
+      limit: queryParams.limit,
+      search: queryParams.search || undefined
+    }
+  })
+}
+
+// Buscar dados usando useAsyncData para SSR
+const { data: userData, pending: isLoading, refresh: refreshUsers } = useAsyncData(
+  () => fetchUsers(queryParams),
+  {
+    watch: [() => queryParams.page, () => queryParams.limit, () => queryParams.search],
+    server: true, // Garantir que os dados sejam buscados no servidor
+    initialCache: false,
+    default: () => ({ users: [], total: 0 })
+  }
+)
+
+// Extrair dados do resultado
+const users = computed(() => userData.value?.users || [])
+const total = computed(() => userData.value?.total || 0)
+
+// Buscar usuários da API
+async function fetchUsers({ page, limit, search }) {
+  const skip = (page - 1) * limit
+  
+  try {
+    let url = ''
+    
+    if (search) {
+      url = `https://dummyjson.com/users/search?q=${search}&limit=${limit}&skip=${skip}&sortBy=firstName&order=asc`
+    } else {
+      url = `https://dummyjson.com/users?limit=${limit}&skip=${skip}&sortBy=firstName&order=asc`
+    }
+    
+    const response = await $fetch(url)
+    return response
+  } catch (error) {
+    console.error('Error fetching users:', error)
+    return { users: [], total: 0 }
+  }
+}
+
+// Manipular mudanças na busca
+const handleSearch = () => {
+  if (searchTimeout.value) {
+    clearTimeout(searchTimeout.value)
+  }
+  
+  searchTimeout.value = setTimeout(() => {
+    queryParams.page = 1
+    queryParams.search = searchQuery.value
+    updateRoute()
+  }, 300)
+}
+
+// Limpar busca
+const clearSearch = () => {
+  searchQuery.value = ''
+  queryParams.search = ''
+  queryParams.page = 1
+  updateRoute()
+}
+
+// Navegação de página
+const handlePageSizeChange = () => {
+  queryParams.page = 1
+  updateRoute()
+}
+
+const goToPage = (page) => {
+  if (page >= 1 && page <= totalPages.value) {
+    queryParams.page = page
+    updateRoute()
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    })
+  }
+}
+
+const nextPage = () => {
+  if (currentPage.value * limit.value < total.value) {
+    goToPage(currentPage.value + 1)
+  }
+}
+
+const prevPage = () => {
+  if (currentPage.value > 1) {
+    goToPage(currentPage.value - 1)
+  }
+}
+
+// Cálculos e formatação
 const totalPages = computed(() => Math.ceil(total.value / limit.value))
 
 const visiblePageNumbers = computed(() => {
@@ -344,89 +466,6 @@ const visiblePageNumbers = computed(() => {
   
   return pages
 })
-
-watch(limit, () => {
-  if (currentPage.value > Math.ceil(total.value / limit.value)) {
-    currentPage.value = 1
-  }
-})
-
-const fetchUsers = async (page = 1, query = '') => {
-  loading.value = true
-  const skip = (page - 1) * limit.value
-  
-  try {
-    let url = ''
-    
-    if (query) {
-      url = `https://dummyjson.com/users/search?q=${query}&limit=${limit.value}&skip=${skip}&sortBy=firstName&order=asc`
-    } else {
-      url = `https://dummyjson.com/users?limit=${limit.value}&skip=${skip}&sortBy=firstName&order=asc`
-    }
-    
-    const response = await fetch(url)
-    
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`)
-    }
-    
-    const data = await response.json()
-    
-    users.value = data.users
-    total.value = data.total
-  } catch (error) {
-    console.error('Error fetching users:', error)
-    users.value = []
-    total.value = 0
-  } finally {
-    loading.value = false
-  }
-}
-
-const handleSearch = () => {
-  if (searchTimeout.value) {
-    clearTimeout(searchTimeout.value)
-  }
-  
-  searchTimeout.value = setTimeout(() => {
-    currentPage.value = 1
-    fetchUsers(currentPage.value, searchQuery.value)
-  }, 300)
-}
-
-const handlePageSizeChange = () => {
-  currentPage.value = 1
-  fetchUsers(currentPage.value, searchQuery.value)
-}
-
-const clearSearch = () => {
-  searchQuery.value = ''
-  currentPage.value = 1
-  fetchUsers(currentPage.value, '')
-}
-
-const goToPage = (page) => {
-  if (page >= 1 && page <= totalPages.value) {
-    currentPage.value = page
-    fetchUsers(currentPage.value, searchQuery.value)
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
-    })
-  }
-}
-
-const nextPage = () => {
-  if (currentPage.value * limit.value < total.value) {
-    goToPage(currentPage.value + 1)
-  }
-}
-
-const prevPage = () => {
-  if (currentPage.value > 1) {
-    goToPage(currentPage.value - 1)
-  }
-}
 
 const formatBirthDate = (dateString) => {
   if (!dateString) return '-'
@@ -472,7 +511,10 @@ const handleImageError = (event) => {
   event.target.src = 'https://via.placeholder.com/150?text=User'
 }
 
-onMounted(() => {
-  fetchUsers(currentPage.value)
+// Observar mudanças no limite e ajustar página se necessário
+watch(limit, () => {
+  if (currentPage.value > Math.ceil(total.value / limit.value)) {
+    currentPage.value = 1
+  }
 })
 </script>
