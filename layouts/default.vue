@@ -171,7 +171,7 @@ const navigation = [
     icon: Utensils
   },
   {
-    name: 'Users',
+    name: 'Usuários',
     href: '/users',
     icon: Users
   }
